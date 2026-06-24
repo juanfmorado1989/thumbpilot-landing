@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ThumbPilot — Automatiza. Personaliza. Destaca.</title>
+<meta name="description" content="Automatización completa de thumbnails para medios de comunicación y canales de YouTube de alto volumen. Sin editores. Sin esperas. Sin errores." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-600:#1D4ED8;
+    --secondary:#06B6D4;
+    --bg:#0A0E1A;
+    --bg-2:#0F172A;
+    --bg-card:#1E2A3A;
+    --bg-deep:#060912;
+    --text:#FFFFFF;
+    --text-2:#F1F5FB;
+    --muted:#94A3B8;
+    --border:#1E3A5F;
+    --success:#10B981;
+    --error:#EF4444;
+    --radius-sm:8px;
+    --radius-md:10px;
+    --radius-lg:16px;
+    --container:1200px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  img{max-width:100%;display:block}
+
+  .container{max-width:var(--container);margin:0 auto;padding:0 24px}
+
+  /* ===== Logo ===== */
+  .logo{display:inline-flex;align-items:center}
+  .logo-img{height:40px;width:auto;display:block}
+  footer .logo-img{height:44px}
+
+  /* ===== Navbar ===== */
+  .nav{
+    position:sticky;top:0;z-index:100;
+    background:rgba(10,14,26,0.72);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .nav.scrolled{border-bottom-color:var(--border);background:rgba(10,14,26,0.88)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .nav-links{display:flex;gap:36px;align-items:center}
+  .nav-links a{color:var(--text-2);font-weight:500;font-size:15px;transition:color .2s ease}
+  .nav-links a:hover{color:var(--primary)}
+  .nav-cta{
+    background:var(--primary);
+    color:#fff;padding:10px 20px;
+    border-radius:var(--radius-sm);
+    font-weight:600;font-size:14px;
+    transition:transform .2s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .nav-cta:hover{background:var(--primary-600);transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.35)}
+  .nav-burger{display:none;flex-direction:column;gap:5px;width:28px;height:22px;justify-content:center}
+  .nav-burger span{display:block;height:2px;background:#fff;border-radius:2px}
+
+  /* ===== Buttons ===== */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font-family:inherit;font-weight:600;
+    border-radius:var(--radius-md);
+    padding:0 22px;height:44px;
+    font-size:15px;line-height:1;
+    transition:transform .2s ease, background .2s ease, box-shadow .2s ease, border-color .2s ease, color .2s ease;
+    cursor:pointer;white-space:nowrap;
+  }
+  .btn-lg{height:52px;padding:0 28px;font-size:16px}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-600);transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,99,235,.4)}
+  .btn-cyan{background:var(--secondary);color:#03252a}
+  .btn-cyan:hover{background:#22d3ee;transform:translateY(-2px);box-shadow:0 12px 32px rgba(6,182,212,.4)}
+  .btn-outline{background:transparent;color:#fff;border:1.5px solid var(--primary)}
+  .btn-outline:hover{background:rgba(37,99,235,.1);border-color:var(--primary)}
+  .btn-outline-cyan{background:transparent;color:var(--secondary);border:1.5px solid var(--secondary)}
+  .btn-outline-cyan:hover{background:rgba(6,182,212,.1)}
+  .btn-ghost{color:var(--muted);background:transparent}
+  .btn-ghost:hover{color:#fff}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;overflow:hidden;
+    padding:88px 0 120px;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:-200px;left:-200px;
+    width:900px;height:900px;
+    background:radial-gradient(circle at center, rgba(37,99,235,.22), rgba(37,99,235,0) 60%);
+    pointer-events:none;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;bottom:-200px;right:-200px;
+    width:700px;height:700px;
+    background:radial-gradient(circle at center, rgba(6,182,212,.08), rgba(6,182,212,0) 60%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:relative;z-index:1;
+    display:grid;
+    grid-template-columns:1.05fr 1fr;
+    gap:64px;align-items:center;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 14px;
+    border:1px solid rgba(37,99,235,.5);
+    background:rgba(37,99,235,.12);
+    border-radius:999px;
+    font-size:13px;font-weight:500;color:#DBEAFE;
+    backdrop-filter:blur(8px);
+  }
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary)}
+  h1.hero-title{
+    font-size:clamp(40px, 5.6vw, 62px);
+    font-weight:600;
+    line-height:1.06;
+    letter-spacing:-0.03em;
+    margin:22px 0 24px;
+    text-wrap:balance;
+  }
+  h1.hero-title .brand{color:var(--primary)}
+  .hero-sub{
+    font-size:18px;color:var(--muted);
+    max-width:540px;margin-bottom:32px;
+    font-weight:400;line-height:1.55;
+  }
+  .hero-ctas{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:28px}
+  .hero-ctas a.link{color:var(--muted);font-weight:500;font-size:15px;padding:8px 4px}
+  .hero-ctas a.link:hover{color:#fff}
+  .hero-proof{font-size:13.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .hero-proof .check{color:var(--success);font-weight:700}
+
+  /* ===== Hero mockup ===== */
+  .mockup{
+    position:relative;
+    perspective:1400px;
+  }
+  .mockup-glow{
+    position:absolute;left:50%;top:50%;
+    width:600px;height:600px;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(37,99,235,.15) 0%, rgba(37,99,235,.08) 30%, transparent 70%);
+    filter:blur(20px);
+    z-index:0;
+    pointer-events:none;
+  }
+  .mockup-card{
+    position:relative;z-index:1;
+    background:#0F172A;
+    border:1px solid rgba(148,163,184,.12);
+    border-radius:16px;
+    padding:14px;
+    box-shadow:0 0 60px rgba(37,99,235,0.3), 0 30px 80px rgba(0,0,0,.5);
+    transform:rotateY(-5deg) rotateX(3deg);
+  }
+  .mockup-topbar{
+    display:flex;align-items:center;gap:7px;
+    padding:6px 6px 12px;border-bottom:1px solid rgba(148,163,184,.08);margin-bottom:14px;
+    position:relative;
+  }
+  .mockup-dot{width:11px;height:11px;border-radius:50%}
+  .mockup-dot.r{background:#FF5F57}
+  .mockup-dot.y{background:#FEBC2E}
+  .mockup-dot.g{background:#28C840}
+  .mockup-title{position:absolute;left:50%;transform:translateX(-50%);font-size:11px;color:#64748B;font-weight:500;letter-spacing:.02em}
+
+  .app-body{display:grid;grid-template-columns:30% 1fr;gap:14px;padding:6px}
+  .app-left{
+    background:rgba(15,23,42,.5);
+    border:1px solid rgba(148,163,184,.06);
+    border-radius:10px;padding:14px 12px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .app-eyebrow{font-size:9.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:#94A3B8}
+  .app-video-name{font-size:11.5px;font-weight:500;color:#E2E8F0;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .app-mini-stats{display:flex;flex-direction:column;gap:5px;padding-top:10px;border-top:1px solid rgba(148,163,184,.08)}
+  .app-mini-stats .row{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#94A3B8}
+  .app-mini-stats .row .v{color:#E2E8F0;font-weight:500;font-variant-numeric:tabular-nums}
+  .app-progress-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(16,185,129,.1);
+    border:1px solid rgba(16,185,129,.25);
+    color:#10B981;
+    padding:5px 9px;border-radius:6px;
+    font-size:10px;font-weight:600;letter-spacing:.02em;
+    align-self:flex-start;margin-top:auto;
+  }
+  .app-progress-badge .dot-pulse{
+    width:6px;height:6px;border-radius:50%;background:#10B981;
+    animation:dot-pulse 1.6s ease-out infinite;
+  }
+  @keyframes dot-pulse{
+    0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}
+    70%{box-shadow:0 0 0 8px rgba(16,185,129,0)}
+    100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}
+  }
+
+  .app-right{display:flex;flex-direction:column;gap:10px;min-width:0}
+  .app-right-title{font-size:12.5px;font-weight:600;color:#FFFFFF;letter-spacing:-0.01em}
+  .app-thumb{
+    aspect-ratio:16/9;border-radius:8px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg, #1E1B4B 0%, #0F172A 60%, #020617 100%);
+    border:1px solid rgba(148,163,184,.08);
+  }
+  .app-thumb::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 75% 30%, rgba(239,68,68,.22), transparent 45%),radial-gradient(circle at 20% 80%, rgba(37,99,235,.18), transparent 50%);
+  }
+  .app-thumb .photo-area{position:absolute;inset:0;background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 12px, transparent 12px 24px)}
+  .app-thumb .ult-bar{
+    position:absolute;left:12px;top:12px;
+    background:#EF4444;color:#fff;
+    font-size:11px;font-weight:700;letter-spacing:.05em;
+    padding:4px 9px;border-radius:3px;
+    box-shadow:0 4px 12px rgba(239,68,68,.4);
+  }
+  .app-thumb .news-strip{
+    position:absolute;left:0;right:0;bottom:0;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,.85) 60%);
+    padding:24px 14px 12px;
+  }
+  .app-thumb .news-strip .h{color:#fff;font-weight:700;font-size:14px;line-height:1.15;letter-spacing:-0.01em;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+  .app-thumb .news-strip .h .hl{color:#FBBF24}
+
+  .app-variants{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .app-variant{
+    aspect-ratio:16/9;border-radius:5px;
+    background:linear-gradient(135deg,#1E1B4B,#0F172A);
+    border:1.5px solid rgba(148,163,184,.1);
+    position:relative;overflow:hidden;
+  }
+  .app-variant::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 6px, transparent 6px 12px)}
+  .app-variant::after{content:"";position:absolute;left:6px;top:5px;width:14px;height:3px;background:#EF4444;border-radius:1px}
+  .app-variant .vlabel{position:absolute;right:5px;bottom:4px;font-size:8px;font-weight:600;color:#94A3B8;letter-spacing:.05em;z-index:1}
+  .app-variant.active{border-color:#2563EB;box-shadow:0 0 0 1px rgba(37,99,235,.4), 0 0 18px rgba(37,99,235,.35)}
+  .app-variant.active .vlabel{color:#60A5FA}
+
+  .app-time-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(6,182,212,.08);
+    border:1px solid rgba(6,182,212,.25);
+    color:#06B6D4;
+    padding:6px 10px;border-radius:6px;
+    font-size:10.5px;font-weight:600;letter-spacing:.01em;
+    align-self:flex-start;
+  }
+  .app-time-badge .num{font-variant-numeric:tabular-nums}
+
+  .float-notif{
+    position:absolute;top:-14px;right:-12px;z-index:5;
+    display:inline-flex;align-items:center;gap:8px;
+    background:#10B981;color:#fff;
+    padding:9px 14px;border-radius:8px;
+    font-size:12px;font-weight:600;letter-spacing:-0.005em;
+    box-shadow:0 12px 30px rgba(16,185,129,.45), 0 0 0 1px rgba(16,185,129,.3);
+    opacity:0;transform:translateY(-12px);
+    animation:notif-in .6s cubic-bezier(.2,.7,.2,1) 1.5s forwards;
+  }
+  .float-notif .check{
+    width:14px;height:14px;border-radius:50%;
+    background:rgba(255,255,255,.25);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:9px;font-weight:700;
+  }
+  @keyframes notif-in{to{opacity:1;transform:translateY(0)}}
+
+  /* ===== Section common ===== */
+  section{padding:120px 0;position:relative}
+  .section-dark{background:var(--bg)}
+  .section-panel{background:var(--bg-2)}
+  .section-head{text-align:center;max-width:760px;margin:0 auto 64px}
+  h2{
+    font-size:clamp(30px, 3.6vw, 44px);
+    font-weight:600;letter-spacing:-0.025em;
+    line-height:1.15;margin-bottom:18px;text-wrap:balance;
+  }
+  .section-sub{color:var(--muted);font-size:18px;line-height:1.55;font-weight:400}
+
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--primary);margin-bottom:14px;
+  }
+
+  /* ===== Problem pain points ===== */
+  .pain-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  }
+  .pain-card{
+    background:rgba(10,14,26,.5);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:32px 28px;
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .pain-card:hover{transform:translateY(-4px);border-color:rgba(37,99,235,.5)}
+  .pain-icon{
+    width:48px;height:48px;border-radius:12px;
+    background:rgba(37,99,235,.15);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;margin-bottom:18px;
+  }
+  .pain-card h3{font-size:20px;font-weight:600;margin-bottom:10px}
+  .pain-card p{color:var(--muted);font-size:15px;line-height:1.55}
+
+  /* ===== How it works timeline ===== */
+  .timeline{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+    position:relative;padding-top:48px;
+  }
+  .timeline::before{
+    content:"";position:absolute;top:70px;left:12%;right:12%;height:2px;
+    background:linear-gradient(90deg, var(--primary), var(--secondary));
+    opacity:.5;z-index:0;
+  }
+  .step{position:relative;text-align:center;z-index:1}
+  .step-bubble{
+    width:64px;height:64px;margin:0 auto 22px;
+    border-radius:50%;
+    background:var(--bg-2);
+    border:2px solid var(--primary);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;
+    box-shadow:0 0 30px rgba(37,99,235,.3);
+    position:relative;
+  }
+  .step-num{
+    position:absolute;top:-10px;right:-6px;
+    background:var(--primary);color:#fff;
+    width:24px;height:24px;border-radius:50%;
+    font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step h3{font-size:18px;font-weight:600;margin-bottom:8px}
+  .step p{color:var(--muted);font-size:14.5px;line-height:1.55;max-width:240px;margin:0 auto}
+
+  /* ===== Features grid ===== */
+  .features-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  }
+  .feature{
+    position:relative;
+    background:rgba(255,255,255,.025);
+    backdrop-filter:blur(10px);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:32px 28px;
+    transition:transform .3s ease, border-color .3s ease, background .3s ease;
+    overflow:hidden;
+  }
+  .feature::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg, transparent, rgba(37,99,235,.5), transparent);
+    opacity:0;transition:opacity .3s ease;
+  }
+  .feature:hover{transform:translateY(-4px);border-color:rgba(37,99,235,.4);background:rgba(37,99,235,.04)}
+  .feature:hover::before{opacity:1}
+  .feature-icon{
+    width:44px;height:44px;border-radius:10px;
+    background:linear-gradient(135deg, rgba(37,99,235,.25), rgba(6,182,212,.15));
+    border:1px solid rgba(37,99,235,.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;margin-bottom:20px;
+  }
+  .feature h3{font-size:18px;font-weight:600;margin-bottom:10px}
+  .feature p{color:var(--muted);font-size:15px;line-height:1.55}
+
+  /* ===== Audience cards ===== */
+  .audience-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .audience{
+    background:var(--bg-2);
+    border:1px solid var(--border);
+    border-left:3px solid var(--primary);
+    border-radius:var(--radius-md);
+    padding:30px 30px 30px 28px;
+    transition:transform .3s ease, box-shadow .3s ease;
+  }
+  .audience:hover{transform:translateX(4px);box-shadow:-8px 8px 24px rgba(0,0,0,.25)}
+  .audience-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .audience-head .ico{
+    font-size:26px;
+    width:48px;height:48px;border-radius:10px;
+    background:rgba(37,99,235,.12);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .audience h3{font-size:19px;font-weight:600}
+  .audience p{color:var(--muted);font-size:15px;line-height:1.55}
+
+  /* ===== Pricing ===== */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;align-items:stretch}
+  .price-card{
+    position:relative;
+    background:rgba(10,14,26,.55);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:36px 30px;
+    display:flex;flex-direction:column;
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .price-card:hover{transform:translateY(-4px)}
+  .price-card.featured{
+    border-color:var(--primary);
+    background:linear-gradient(180deg, rgba(37,99,235,.08), rgba(10,14,26,.55));
+    box-shadow:0 20px 60px -20px rgba(37,99,235,.35);
+    transform:translateY(-8px);
+  }
+  .price-badge{
+    position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+    background:var(--primary);color:#fff;
+    padding:6px 14px;border-radius:999px;
+    font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .plan-name{font-size:14px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+  .plan-price{display:flex;align-items:baseline;gap:6px;margin-bottom:10px}
+  .plan-price .amount{font-size:44px;font-weight:600;letter-spacing:-0.02em}
+  .plan-price .per{color:var(--muted);font-size:15px}
+  .plan-desc{color:var(--muted);font-size:14.5px;margin-bottom:24px;min-height:44px}
+  .plan-features{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:28px;flex:1}
+  .plan-features li{display:flex;gap:10px;font-size:14.5px;color:var(--text-2);line-height:1.45}
+  .plan-features li .chk{color:var(--success);flex-shrink:0;font-weight:700;margin-top:1px}
+  .price-card .btn{width:100%}
+  .price-note{
+    max-width:780px;margin:40px auto 0;
+    text-align:center;
+    padding:18px 26px;
+    background:rgba(37,99,235,.08);
+    border:1px dashed rgba(37,99,235,.4);
+    border-radius:var(--radius-md);
+    color:var(--text-2);font-size:14.5px;
+  }
+  .price-note strong{color:var(--primary);font-weight:600}
+
+  /* ===== FAQ ===== */
+  .faq{max-width:820px;margin:0 auto}
+  .faq-item{border-bottom:1px solid var(--border)}
+  .faq-item:first-child{border-top:1px solid var(--border)}
+  .faq-q{
+    width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:22px 4px;text-align:left;
+    font-size:17px;font-weight:500;color:#fff;
+    transition:color .2s ease;
+  }
+  .faq-q:hover{color:var(--primary)}
+  .faq-toggle{
+    width:28px;height:28px;border-radius:50%;
+    background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.4);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    font-size:16px;font-weight:500;color:var(--primary);
+    transition:transform .3s ease, background .3s ease;
+  }
+  .faq-item.open .faq-toggle{transform:rotate(45deg);background:var(--primary);color:#fff}
+  .faq-a{
+    max-height:0;overflow:hidden;
+    transition:max-height .4s ease, padding .4s ease;
+    color:var(--muted);font-size:15.5px;line-height:1.65;
+  }
+  .faq-item.open .faq-a{padding:0 4px 22px;max-height:240px}
+
+  /* ===== Demo form section ===== */
+  .demo-section{
+    position:relative;
+    background:linear-gradient(180deg, #0D2137 0%, var(--bg) 100%);
+    padding:120px 0;
+    overflow:hidden;
+  }
+  .demo-section::before{
+    content:"";position:absolute;top:-50%;left:50%;transform:translateX(-50%);
+    width:900px;height:600px;
+    background:radial-gradient(ellipse, rgba(37,99,235,.2), transparent 60%);
+    filter:blur(40px);pointer-events:none;
+  }
+  .demo-grid{
+    position:relative;z-index:1;
+    display:grid;
+    grid-template-columns:1fr 1.15fr;
+    gap:80px;
+    align-items:start;
+  }
+  .demo-left h2{font-size:clamp(30px,3.8vw,44px);margin-bottom:16px}
+  .demo-left h2 .accent{color:var(--primary)}
+  .demo-left p{color:var(--muted);font-size:16px;line-height:1.6;margin-bottom:32px}
+  .demo-trust{display:flex;flex-direction:column;gap:14px}
+  .demo-trust-item{display:flex;align-items:flex-start;gap:12px}
+  .demo-trust-item .icon{
+    width:36px;height:36px;border-radius:9px;flex-shrink:0;
+    background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.25);
+    display:flex;align-items:center;justify-content:center;font-size:16px;
+  }
+  .demo-trust-item p{color:var(--muted);font-size:14px;line-height:1.5;margin:0}
+  .demo-trust-item strong{color:var(--text-2);display:block;font-size:14px;font-weight:600;margin-bottom:2px}
+
+  /* Form card */
+  .form-card{
+    background:rgba(15,23,42,.7);
+    border:1px solid rgba(37,99,235,.25);
+    border-radius:20px;
+    padding:40px 36px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 60px rgba(37,99,235,.12), 0 30px 80px rgba(0,0,0,.4);
+  }
+  .form-card h3{font-size:20px;font-weight:600;margin-bottom:6px}
+  .form-card .form-sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .form-group{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+  .form-group label{font-size:13px;font-weight:500;color:var(--text-2)}
+  .form-group label .req{color:var(--primary);margin-left:2px}
+  .form-group input,
+  .form-group textarea,
+  .form-group select{
+    background:rgba(10,14,26,.7);
+    border:1px solid rgba(30,58,95,.8);
+    border-radius:var(--radius-sm);
+    color:var(--text);
+    font-family:inherit;
+    font-size:14px;
+    padding:11px 14px;
+    width:100%;
+    transition:border-color .2s ease, box-shadow .2s ease;
+    outline:none;
+  }
+  .form-group input::placeholder,
+  .form-group textarea::placeholder{color:#4A5A6A}
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus{
+    border-color:rgba(37,99,235,.6);
+    box-shadow:0 0 0 3px rgba(37,99,235,.12);
+  }
+  .form-group textarea{resize:vertical;min-height:100px;line-height:1.5}
+  .form-group select option{background:#0F172A}
+  .form-submit{
+    width:100%;height:52px;
+    background:linear-gradient(135deg, var(--primary), #1D4ED8);
+    color:#fff;
+    border-radius:var(--radius-md);
+    font-size:15px;font-weight:600;
+    border:none;cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+    box-shadow:0 8px 28px rgba(37,99,235,.35);
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .form-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 36px rgba(37,99,235,.45)}
+  .form-submit:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+  /* Form states */
+  .form-success{
+    display:none;
+    text-align:center;padding:40px 20px;
+  }
+  .form-success.show{display:block}
+  .form-fields.hide{display:none}
+  .success-icon{
+    width:64px;height:64px;border-radius:50%;
+    background:rgba(16,185,129,.15);border:2px solid rgba(16,185,129,.4);
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;margin:0 auto 20px;
+  }
+  .form-success h3{font-size:22px;font-weight:600;margin-bottom:10px}
+  .form-success p{color:var(--muted);font-size:15px;line-height:1.6}
+
+  .form-error-msg{
+    display:none;
+    background:rgba(239,68,68,.1);
+    border:1px solid rgba(239,68,68,.3);
+    border-radius:var(--radius-sm);
+    color:#FCA5A5;
+    font-size:13.5px;
+    padding:11px 14px;
+    margin-top:14px;
+  }
+  .form-error-msg.show{display:block}
+
+  /* Spinner */
+  .spinner{
+    width:18px;height:18px;
+    border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    display:none;
+  }
+  .form-submit.loading .spinner{display:block}
+  .form-submit.loading .btn-text{display:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ===== Footer ===== */
+  footer{background:var(--bg-deep);padding:56px 0 28px;border-top:1px solid var(--border)}
+  .footer-grid{
+    display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;
+    padding-bottom:36px;border-bottom:1px solid var(--border);
+  }
+  .footer-brand{max-width:320px}
+  .footer-brand p{color:var(--muted);font-size:14px;margin-top:14px;line-height:1.55}
+  .footer-col h4{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .footer-col a{color:var(--text-2);font-size:14.5px;transition:color .2s ease}
+  .footer-col a:hover{color:var(--primary)}
+  .footer-bottom{padding-top:24px;text-align:center;color:var(--muted);font-size:13px}
+
+  /* ===== Reveal animations ===== */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  .reveal-d1{transition-delay:.08s}
+  .reveal-d2{transition-delay:.16s}
+  .reveal-d3{transition-delay:.24s}
+  .reveal-d4{transition-delay:.32s}
+
+  /* ===== Responsive ===== */
+  @media (max-width:960px){
+    .nav-links{display:none}
+    .nav-burger{display:flex}
+    .hero{padding:48px 0 72px}
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .mockup-card{transform:none}
+    section{padding:80px 0}
+    .demo-section{padding:80px 0}
+    .pain-grid{grid-template-columns:1fr;gap:16px}
+    .timeline{grid-template-columns:1fr 1fr;gap:40px}
+    .timeline::before{display:none}
+    .features-grid{grid-template-columns:1fr;gap:16px}
+    .audience-grid{grid-template-columns:1fr}
+    .pricing-grid{grid-template-columns:1fr;gap:20px}
+    .price-card.featured{transform:none}
+    .footer-grid{grid-template-columns:1fr;gap:32px}
+    .section-head{margin-bottom:44px}
+    .demo-grid{grid-template-columns:1fr;gap:48px}
+    .form-card{padding:28px 22px}
+  }
+  @media (max-width:520px){
+    .btn-lg{width:100%}
+    .hero-ctas{flex-direction:column;align-items:stretch}
+    .hero-ctas .btn{width:100%}
+    .timeline{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ======= NAVBAR ======= -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="logo" aria-label="ThumbPilot inicio">
+      <img src="assets/thumbpilot-header.png" alt="ThumbPilot" class="logo-img" style="object-fit:scale-down;width:200px"/>
+    </a>
+    <div class="nav-links">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#precios">Precios</a>
+      <a href="#demo">Contacto</a>
+    </div>
+    <a href="#demo" class="nav-cta">Solicitar demo</a>
+    <button class="nav-burger" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ======= HERO ======= -->
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="badge reveal"><span class="dot"></span> Automatización de thumbnails con IA</span>
+      <h1 class="hero-title reveal reveal-d1">
+        Deja de hacer <span class="brand">thumbnails</span>.<br/>
+        Empieza a hacer <span style="background:linear-gradient(90deg,#2563EB,#06B6D4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">contenido</span>.
+      </h1>
+      <p class="hero-sub reveal reveal-d2">
+        Automatización completa de miniaturas para medios de comunicación y canales de alto volumen.
+        Sin editores. Sin esperas. Sin errores.
+      </p>
+      <div class="hero-ctas reveal reveal-d3">
+        <a href="#demo" class="btn btn-primary btn-lg">Solicitar acceso anticipado →</a>
+        <a href="#como-funciona" class="link">Ver cómo funciona ↓</a>
+      </div>
+      <div class="hero-proof reveal reveal-d4">
+        <span class="check">✓</span> Utilizado por medios que publican +50 videos al día
+      </div>
+    </div>
+
+    <div class="mockup reveal reveal-d2" aria-hidden="true">
+      <div class="mockup-glow"></div>
+      <div class="float-notif">
+        <span class="check">✓</span> Thumbnail subido a YouTube
+      </div>
+      <div class="mockup-card">
+        <div class="mockup-topbar">
+          <span class="mockup-dot r"></span>
+          <span class="mockup-dot y"></span>
+          <span class="mockup-dot g"></span>
+          <span class="mockup-title">ThumbPilot · Dashboard</span>
+        </div>
+        <div class="app-body">
+          <div class="app-left">
+            <div>
+              <div class="app-eyebrow">Canal detectado</div>
+              <div class="app-video-name" style="margin-top:6px">🎬 ÚLTIMA HORA: Cumbre G20…</div>
+            </div>
+            <div class="app-mini-stats">
+              <div class="row"><span>Duración</span><span class="v">12:48</span></div>
+              <div class="row"><span>Resolución</span><span class="v">1080p</span></div>
+              <div class="row"><span>Estilo</span><span class="v">Noticias</span></div>
+            </div>
+            <div class="app-progress-badge">
+              <span class="dot-pulse"></span> En proceso
+            </div>
+          </div>
+          <div class="app-right">
+            <div class="app-right-title">Thumbnail generado</div>
+            <div class="app-thumb">
+              <div class="photo-area"></div>
+              <div class="ult-bar">ÚLTIMA HORA</div>
+              <div class="news-strip">
+                <div class="h">Cumbre <span class="hl">G20</span> en directo</div>
+              </div>
+            </div>
+            <div class="app-variants">
+              <div class="app-variant active"><span class="vlabel">V1</span></div>
+              <div class="app-variant"><span class="vlabel">V2</span></div>
+              <div class="app-variant"><span class="vlabel">V3</span></div>
+            </div>
+            <div class="app-time-badge">
+              ⚡ Generado en <span class="num" id="app-counter">0</span> segundos
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ======= PROBLEMA ======= -->
+<section class="section-panel">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">El problema</span>
+      <h2>Cada video sin miniatura profesional es una oportunidad perdida.</h2>
+      <p class="section-sub">Los medios publican decenas de videos al día. Diseñar cada miniatura es imposible. El resultado: thumbnails improvisados, marca inconsistente, equipos saturados.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card reveal reveal-d1">
+        <div class="pain-icon">🕐</div>
+        <h3>Horas perdidas</h3>
+        <p>Trabajo manual y repetitivo que consume tiempo valioso de tu equipo creativo.</p>
+      </div>
+      <div class="pain-card reveal reveal-d2">
+        <div class="pain-icon">📉</div>
+        <h3>Marca inconsistente</h3>
+        <p>Miniaturas improvisadas que dañan la imagen profesional del canal.</p>
+      </div>
+      <div class="pain-card reveal reveal-d3">
+        <div class="pain-icon">🔁</div>
+        <h3>Equipos saturados</h3>
+        <p>Diseñadores haciendo trabajo de bajo valor en lugar de crear.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= CÓMO FUNCIONA ======= -->
+<section class="section-dark" id="como-funciona">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2>Del video publicado al thumbnail en menos de 60 segundos.</h2>
+      <p class="section-sub">ThumbPilot monitorea tu canal, detecta cada nuevo video y genera la miniatura perfecta de forma automática.</p>
+    </div>
+    <div class="timeline">
+      <div class="step reveal reveal-d1">
+        <div class="step-bubble">🎬<span class="step-num">1</span></div>
+        <h3>Publicas el video</h3>
+        <p>Nada cambia en tu flujo de trabajo. Publica como siempre.</p>
+      </div>
+      <div class="step reveal reveal-d2">
+        <div class="step-bubble">⚡<span class="step-num">2</span></div>
+        <h3>ThumbPilot lo detecta</h3>
+        <p>Monitoreo en tiempo real. Detección instantánea del nuevo video.</p>
+      </div>
+      <div class="step reveal reveal-d3">
+        <div class="step-bubble">🔍<span class="step-num">3</span></div>
+        <h3>Encuentra la imagen perfecta</h3>
+        <p>La IA extrae palabras clave y busca fotos de noticias recientes en alta resolución.</p>
+      </div>
+      <div class="step reveal reveal-d4">
+        <div class="step-bubble">✅<span class="step-num">4</span></div>
+        <h3>Genera y publica</h3>
+        <p>Aplica tu template de marca y sube el thumbnail a YouTube automáticamente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FEATURES ======= -->
+<section class="section-panel">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Funcionalidades</span>
+      <h2>Todo lo que necesitas.<br/>Nada que no necesitas.</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature reveal reveal-d1">
+        <div class="feature-icon">🎨</div>
+        <h3>Templates de marca a medida</h3>
+        <p>Diseñamos tus templates con tu identidad visual. Una vez configurados, se aplican solos para siempre.</p>
+      </div>
+      <div class="feature reveal reveal-d2">
+        <div class="feature-icon">🔍</div>
+        <h3>Imágenes de noticias en tiempo real</h3>
+        <p>Fotos recientes y de alta calidad relacionadas con el contenido de cada video.</p>
+      </div>
+      <div class="feature reveal reveal-d3">
+        <div class="feature-icon">📺</div>
+        <h3>Integración directa con YouTube</h3>
+        <p>Conexión con tu canal vía API oficial. Sube thumbnails sin intervención manual.</p>
+      </div>
+      <div class="feature reveal reveal-d1">
+        <div class="feature-icon">🏷️</div>
+        <h3>Tags y hashtags automáticos</h3>
+        <p>Optimización SEO de cada video con etiquetas y hashtags relevantes.</p>
+      </div>
+      <div class="feature reveal reveal-d2">
+        <div class="feature-icon">📊</div>
+        <h3>Dashboard de control</h3>
+        <p>Revisa, aprueba o regenera cualquier thumbnail desde un panel centralizado.</p>
+      </div>
+      <div class="feature reveal reveal-d3">
+        <div class="feature-icon">🔔</div>
+        <h3>Notificaciones en tiempo real</h3>
+        <p>Alertas al instante cuando se genera cada thumbnail. Siempre en control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PARA QUIÉN ES ======= -->
+<section class="section-dark">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Para quién es</span>
+      <h2>Hecho para quienes publican en serio.</h2>
+    </div>
+    <div class="audience-grid">
+      <div class="audience reveal reveal-d1">
+        <div class="audience-head"><span class="ico">📰</span><h3>Medios de comunicación</h3></div>
+        <p>Canales de noticias que publican 20, 50 o 100 videos al día y necesitan consistencia visual total.</p>
+      </div>
+      <div class="audience reveal reveal-d2">
+        <div class="audience-head"><span class="ico">📡</span><h3>Canales de entretenimiento</h3></div>
+        <p>Creadores con templates definidos que quieren automatizar su producción visual.</p>
+      </div>
+      <div class="audience reveal reveal-d3">
+        <div class="audience-head"><span class="ico">🏢</span><h3>Agencias de contenido</h3></div>
+        <p>Agencias que gestionan múltiples canales y necesitan escalar sin aumentar el equipo.</p>
+      </div>
+      <div class="audience reveal reveal-d4">
+        <div class="audience-head"><span class="ico">🎙️</span><h3>Productoras y podcasts</h3></div>
+        <p>Cualquier productor con contenido recurrente que quiera imagen profesional sin esfuerzo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PRECIOS ======= -->
+<section class="section-panel" id="precios">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Precios</span>
+      <h2>Precios claros. Sin sorpresas.</h2>
+      <p class="section-sub">Empieza con la implementación y paga solo por lo que usas.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal reveal-d1">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><span class="amount">€99</span><span class="per">/mes</span></div>
+        <p class="plan-desc">Para canales de hasta 30 videos por día.</p>
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> 1 canal de YouTube conectado</li>
+          <li><span class="chk">✓</span> Hasta 2 templates de marca</li>
+          <li><span class="chk">✓</span> Generación automática de thumbnails</li>
+          <li><span class="chk">✓</span> Búsqueda de imágenes en tiempo real</li>
+          <li><span class="chk">✓</span> Dashboard de control</li>
+          <li><span class="chk">✓</span> Soporte por email</li>
+        </ul>
+        <a href="#demo" class="btn btn-outline">Empezar con Starter</a>
+      </div>
+      <div class="price-card featured reveal reveal-d2">
+        <div class="price-badge">★ Más popular</div>
+        <div class="plan-name" style="color:var(--primary)">Pro</div>
+        <div class="plan-price"><span class="amount">€199</span><span class="per">/mes</span></div>
+        <p class="plan-desc">Para medios y canales de alto volumen.</p>
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> Hasta 3 canales de YouTube</li>
+          <li><span class="chk">✓</span> Hasta 5 templates de marca</li>
+          <li><span class="chk">✓</span> Todo lo del plan Starter</li>
+          <li><span class="chk">✓</span> Tags y hashtags automáticos</li>
+          <li><span class="chk">✓</span> 3 variantes de thumbnail por video</li>
+          <li><span class="chk">✓</span> Soporte prioritario</li>
+        </ul>
+        <a href="#demo" class="btn btn-primary btn-lg">Empezar con Pro</a>
+      </div>
+      <div class="price-card reveal reveal-d3">
+        <div class="plan-name" style="color:var(--secondary)">Agencia</div>
+        <div class="plan-price"><span class="amount">€399</span><span class="per">/mes</span></div>
+        <p class="plan-desc">Para agencias que gestionan múltiples clientes.</p>
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> Canales ilimitados</li>
+          <li><span class="chk">✓</span> Templates ilimitados</li>
+          <li><span class="chk">✓</span> Todo lo del plan Pro</li>
+          <li><span class="chk">✓</span> Panel multi-cliente</li>
+          <li><span class="chk">✓</span> API de integración propia</li>
+          <li><span class="chk">✓</span> Onboarding dedicado</li>
+          <li><span class="chk">✓</span> Soporte 24/7</li>
+        </ul>
+        <a href="#demo" class="btn btn-outline-cyan">Hablar con ventas</a>
+      </div>
+    </div>
+    <div class="price-note reveal">
+      <strong>⚡ Implementación inicial desde €299</strong> — incluye diseño de templates y configuración completa. Pago único.
+    </div>
+  </div>
+</section>
+
+<!-- ======= FAQ ======= -->
+<section class="section-dark">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">FAQ</span>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Cuánto tiempo tarda el onboarding?</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a"><p>Entre 3 y 5 días hábiles. Diseñamos tus templates, conectamos tu canal y hacemos pruebas hasta que todo funcione perfectamente.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Necesito cambiar cómo publico mis videos?</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a"><p>No. Publicas exactamente como siempre. ThumbPilot trabaja en segundo plano sin interrumpir tu flujo.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Qué pasa si el thumbnail generado no me gusta?</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a"><p>Desde el dashboard puedes regenerarlo con otras imágenes o editarlo manualmente en segundos. Siempre tienes el control final.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Las imágenes que usa son legales?</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a"><p>ThumbPilot obtiene imágenes de búsquedas públicas. Recomendamos verificar derechos de uso según la jurisdicción para contenido comercial.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Puedo cancelar en cualquier momento?</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a"><p>Sí. Sin permanencia ni penalizaciones. Cancela cuando quieras.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Funciona con cualquier tipo de canal?</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a"><p>Sí, especialmente para noticias, deportes, entretenimiento y contenido de marca con publicaciones frecuentes.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= DEMO FORM ======= -->
+<section class="demo-section" id="demo">
+  <div class="container">
+    <div class="demo-grid">
+
+      <!-- Left: copy -->
+      <div class="demo-left reveal">
+        <span class="eyebrow">Solicitar demo</span>
+        <h2>Tu equipo ya tiene suficiente trabajo.<br/><span class="accent">Los thumbnails, los hacemos nosotros.</span></h2>
+        <p>Cuéntanos sobre tu canal y te mostramos cómo ThumbPilot se adapta a tu flujo de trabajo. Demo personalizada en menos de 48 h.</p>
+        <div class="demo-trust">
+          <div class="demo-trust-item">
+            <span class="icon">⚡</span>
+            <div>
+              <strong>Respuesta en menos de 24 h</strong>
+              <p>Te contactamos para coordinar una demo en vivo.</p>
+            </div>
+          </div>
+          <div class="demo-trust-item">
+            <span class="icon">🎨</span>
+            <div>
+              <strong>Demo con tus propios templates</strong>
+              <p>Te mostramos el sistema funcionando con tu identidad visual.</p>
+            </div>
+          </div>
+          <div class="demo-trust-item">
+            <span class="icon">🔒</span>
+            <div>
+              <strong>Sin compromiso ni tarjeta</strong>
+              <p>Solo necesitamos tu canal de YouTube para preparar la demo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: form card -->
+      <div class="reveal reveal-d1">
+        <div class="form-card">
+          <h3>Solicitar demo gratuita</h3>
+          <p class="form-sub">Completa el formulario y te contactamos en menos de 24 horas.</p>
+
+          <!-- Success state -->
+          <div class="form-success" id="form-success">
+            <div class="success-icon">✅</div>
+            <h3>¡Solicitud recibida!</h3>
+            <p>Gracias por tu interés en ThumbPilot. Te contactaremos en menos de 24 horas para coordinar la demo.</p>
+          </div>
+
+          <!-- Fields -->
+          <div class="form-fields" id="form-fields">
+            <form id="demo-form" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="nombre">Nombre completo<span class="req">*</span></label>
+                  <input type="text" id="nombre" name="nombre" placeholder="Juan García" required autocomplete="name" />
+                </div>
+                <div class="form-group">
+                  <label for="empresa">Empresa / Medio<span class="req">*</span></label>
+                  <input type="text" id="empresa" name="empresa" placeholder="Canal 24 Horas" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email de contacto<span class="req">*</span></label>
+                <input type="email" id="email" name="email" placeholder="juan@tucanal.com" required autocomplete="email" />
+              </div>
+
+              <div class="form-group">
+                <label for="canal">Canal de YouTube<span class="req">*</span></label>
+                <input type="url" id="canal" name="canal_youtube" placeholder="https://youtube.com/@tucanal" required />
+              </div>
+
+              <div class="form-group">
+                <label for="volumen">Videos publicados por día</label>
+                <select id="volumen" name="volumen_diario">
+                  <option value="" disabled selected>Selecciona un rango</option>
+                  <option value="1-5">1–5 videos/día</option>
+                  <option value="6-20">6–20 videos/día</option>
+                  <option value="21-50">21–50 videos/día</option>
+                  <option value="50+">Más de 50 videos/día</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="mensaje">¿Qué quieres automatizar?</label>
+                <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos tu caso de uso, el volumen de publicaciones, el tipo de contenido..."></textarea>
+              </div>
+
+              <button type="submit" class="form-submit" id="form-submit">
+                <span class="btn-text">Solicitar demo gratuita →</span>
+                <span class="spinner"></span>
+              </button>
+
+              <div class="form-error-msg" id="form-error">
+                Hubo un error al enviar tu solicitud. Por favor intenta de nuevo o escríbenos a <strong>hola@thumbpilotapp.com</strong>.
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer id="contacto">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo" aria-label="ThumbPilot">
+          <img src="assets/thumbpilot-header.png" alt="ThumbPilot" class="logo-img" style="width:180px;object-fit:scale-down"/>
+        </a>
+        <p style="margin-top:12px">Automatización de thumbnails para YouTube.<br/>Hecho por <a href="https://bru-agency.com" style="color:var(--primary)">BRU Agency</a>.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#">Inicio</a></li>
+          <li><a href="#como-funciona">Cómo funciona</a></li>
+          <li><a href="#precios">Precios</a></li>
+          <li><a href="#demo">Solicitar demo</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Política de privacidad</a></li>
+          <li><a href="#">Términos de uso</a></li>
+          <li><a href="mailto:hola@thumbpilotapp.com">hola@thumbpilotapp.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 ThumbPilot. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<script>
+  // ── Sticky nav ──────────────────────────────────────────────────────────────
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // ── Reveal on intersect ─────────────────────────────────────────────────────
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold: 0.12, rootMargin: '0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ── Hero counter 0 → 47 ─────────────────────────────────────────────────────
+  (function(){
+    const el = document.getElementById('app-counter');
+    if (!el) return;
+    const target = 47, dur = 1100, t0 = performance.now();
+    function tick(t){
+      const p = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+
+  // ── FAQ accordion ───────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // ── Demo form submit ────────────────────────────────────────────────────────
+  const API_URL = 'https://thumbpilot-production.up.railway.app/demo/request';
+  // TODO: update to https://api.thumbpilotapp.com/demo/request once DNS is configured
+
+  document.getElementById('demo-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('form-submit');
+    const errEl = document.getElementById('form-error');
+
+    // Basic client-side validation
+    const nombre = document.getElementById('nombre').value.trim();
+    const empresa = document.getElementById('empresa').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const canal = document.getElementById('canal').value.trim();
+    if (!nombre || !empresa || !email || !canal) {
+      errEl.textContent = 'Por favor completa los campos obligatorios.';
+      errEl.classList.add('show');
+      return;
+    }
+
+    // Loading state
+    btn.classList.add('loading');
+    btn.disabled = true;
+    errEl.classList.remove('show');
+
+    const payload = {
+      nombre,
+      empresa,
+      email,
+      canal_youtube: canal,
+      volumen_diario: document.getElementById('volumen').value || null,
+      mensaje: document.getElementById('mensaje').value.trim() || null,
+    };
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      // Success
+      document.getElementById('form-fields').classList.add('hide');
+      document.getElementById('form-success').classList.add('show');
+    } catch (err) {
+      errEl.textContent = 'Hubo un error al enviar tu solicitud. Por favor intenta de nuevo o escríbenos a hola@thumbpilotapp.com.';
+      errEl.classList.add('show');
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
